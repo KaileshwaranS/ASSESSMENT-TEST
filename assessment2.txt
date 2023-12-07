@@ -1,0 +1,39 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to extract payload from the given data format
+char* extractPayload(const char* data) {
+    // Extract length from the data
+    int length = (data[2] << 8) | data[3];
+
+    // Allocate memory for the payload
+    char* payload = (char*)malloc(length);
+
+    // Copy the payload from the input data
+    for (int i = 0; i < length; ++i) 
+    {
+        payload[i] = data[4 + i];
+    }
+
+    return payload;
+}
+
+int main() {
+    // Example data format: [command][command][length][length][data_type][data]
+    char input[] = {0x01, 0x02, 0x00, 0x04, 0x03, 0x2A, 0x42, 0x7F};
+
+    // Extract payload using the function
+    char* extractedPayload = extractPayload(input);
+
+    // Display the extracted payload
+    printf("Extracted Payload: ");
+    for (int i = 0; i < (input[2] << 8) | input[3]; ++i) {
+        printf("%02X ", extractedPayload[i]);
+    }
+
+    // Free allocated memory
+    free(extractedPayload);
+
+    return 0;
+}
